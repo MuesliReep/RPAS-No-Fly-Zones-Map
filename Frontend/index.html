@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>RPAS No-Fly Zones</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script>
+
+      var EarthRadiusMeters = 6378137.0; // meters
+      var bounds = null;
+
+      function drawArc(center, initialBearing, finalBearing, radius) {
+      var d2r = Math.PI / 180;   // degrees to radians
+      var r2d = 180 / Math.PI;   // radians to degrees
+
+         var points = 48;
+
+         // find the raidus in lat/lon
+         var rlat = (radius / EarthRadiusMeters) * r2d;
+         var rlng = rlat / Math.cos(center.lat() * d2r);
+
+         var extp = new Array();
+
+         if (initialBearing > finalBearing) finalBearing += 360;
+         var deltaBearing = finalBearing - initialBearing;
+         deltaBearing = deltaBearing/points;
+
+         for (var i=0; (i < points+1); i++)
+         {
+            extp.push(google.maps.geometry.spherical.computeOffset(center, radius,initialBearing + i*deltaBearing));
+            bounds.extend(extp[extp.length-1]);
+         }
+         return extp;
+     }
+
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 8.1,
+          center: {lat: 52.15, lng: 5.5},
+          streetViewControl: false,
+          mapTypeId: 'terrain'
+        });
+
+        bounds = new google.maps.LatLngBounds();
+
+        // EHKD
+        var endPoint    = new google.maps.LatLng(53.02856, 4.823961);
+        var startPoint  = new google.maps.LatLng(52.98711, 4.925572);
+        var centerPoint = new google.maps.LatLng(52.92361, 4.780556);
+
+        var flightPlanCoordinates = drawArc(centerPoint, google.maps.geometry.spherical.computeHeading(centerPoint,startPoint),
+                                                         google.maps.geometry.spherical.computeHeading(centerPoint,endPoint),
+                                                         google.maps.geometry.spherical.computeDistanceBetween(centerPoint,startPoint));
+
+        endPoint    = new google.maps.LatLng(52.99198, 4.936744);
+        startPoint  = new google.maps.LatLng(53.03663, 4.827308);
+        centerPoint = new google.maps.LatLng(52.92361, 4.780556);
+
+        var secondPart = drawArc(centerPoint, google.maps.geometry.spherical.computeHeading(centerPoint,startPoint),
+                                              google.maps.geometry.spherical.computeHeading(centerPoint,endPoint),
+                                              google.maps.geometry.spherical.computeDistanceBetween(centerPoint,startPoint));
+
+        flightPlanCoordinates = flightPlanCoordinates.concat(secondPart);
+
+        var polygon = new google.maps.Polygon({
+          path: flightPlanCoordinates,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        polygon.setMap(map);
+      }
+
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7EqI8FFIqHlit-wCln_gELlgJZqNrM0k&callback=initMap&libraries=geometry">
+    </script>
+  </body>
+</html>
