@@ -9,10 +9,12 @@ public:
     Config();
 
     QString getOutputDir()   const;
+    QString getXmlSource()   const;
     int     getRefreshRate() const;
 
 private:
     QString outputDir;
+    QString xmlSource;
     int     refreshRate;
 };
 

@@ -1,11 +1,30 @@
 #include "notamparser.h"
 
+#include <QXmlStreamReader>
 
-QJsonArray NotamParser::notamXmlToJson(QString xmlNotamList)
+/*!
+ * \brief NotamParser::notamXmlToJson
+ * \param xmlData
+ * \return
+ */
+QJsonArray NotamParser::notamXmlToJson(QByteArray xmlData)
 {
-    (void) xmlNotamList;
+    QXmlStreamReader reader;
 
-    return null;
+    reader.addData(xmlData); // data is a QByteArray obtained from the API call
+
+    while(reader.readNextStartElement()) {
+       // qDebug() << reader.name();
+        if (reader.name() == "post") {
+            while(reader.readNextStartElement()) {
+                    //qDebug() << reader.name() << reader.readElementText();
+            }
+        }
+    }
+
+    QJsonArray restrictedAreas;
+
+    return restrictedAreas;
 }
 
 /*!

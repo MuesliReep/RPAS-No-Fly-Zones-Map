@@ -3,12 +3,13 @@
 
 #include <QString>
 #include <QJsonArray>
+#include <QByteArray>
 
 class NotamParser
 {
 public:
 
-    static QJsonArray notamXmlToJson(QString xmlNotamList);
+    static QJsonArray notamXmlToJson(QByteArray xmlData);
 
     static double DMStoDDConverter(QString DMSValue);
 };

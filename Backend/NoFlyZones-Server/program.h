@@ -5,6 +5,7 @@
 #include <QTimer>
 
 #include "config.h"
+#include "downloader.h"
 
 class Program : public QObject
 {
@@ -14,12 +15,14 @@ public:
     ~Program();
 
 private:
-    Config *config;
-    QTimer *timer;
+    Config      config;
+    Downloader  downloader;
+    QTimer     *timer;
 
 signals:
 
 public slots:
+    void receiveNewData(QByteArray xmlData);
 
 private slots:
     void tick();
