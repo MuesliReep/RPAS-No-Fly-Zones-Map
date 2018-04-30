@@ -88,6 +88,11 @@
         });
 
         polygon.setMap(map);
+
+        // Center map on The Netherlands
+        var bounds = new google.maps.LatLngBounds(new google.maps.LatLng(50.803133, 3.298911),  // South West Point
+                                                  new google.maps.LatLng(53.546759, 7.227787)); // North East Point
+        map.fitBounds(bounds);
       }
 
     </script>
